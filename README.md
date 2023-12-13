@@ -63,7 +63,7 @@ sudo chown postgres_exporter:postgres_exporter /opt/postgres_exporter
 sudo chown postgres_exporter:postgres_exporter /opt/postgres_exporter/.postgres.env
 
 ```
-Replace <user>, <password> and <host> with your actual PostgreSQL credentials.
+Replace `<user>`, `<password>` and `<host>` with your actual PostgreSQL credentials.
 
 ### 5. Enable and Start the Service
 Enable the PostgreSQL Exporter service to start on boot and start the service:
