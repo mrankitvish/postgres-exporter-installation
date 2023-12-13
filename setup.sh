@@ -27,6 +27,8 @@ After=network-online.target
 User=${exporter_user}
 Group=${exporter_user}
 Type=simple
+WorkingDirectory=/opt/postgres_exporter
+EnvironmentFile=/opt/postgres_exporter/.postgres.env
 ExecStart=/usr/local/bin/${exporter_binary}
 
 [Install]
@@ -34,10 +36,18 @@ WantedBy=multi-user.target
 " | sudo tee $systemd_service_file
 
 # Step 4: Set Environment Variable for PostgreSQL Connection
+read -p "Enter your PostgreSQL User: " user
 read -p "Enter your PostgreSQL password: " postgres_password
-export DATA_SOURCE_NAME="postgresql://postgres:${postgres_password}@localhost:5432/postgres?sslmode=disable"
+read -p "Enter your PostgreSQL Host (eg. localhost): " host
+read -p "Enter your PostgreSQL Database Name (eg. postgres): " db
 
-# Step 5: Enable and Start the Service
+# Step 5: Configuring
+sudo mkdir /opt/postgres_exporter 
+echo "DATA_SOURCE_NAME="postgresql://${user}:${postgres_password}@${host}:5432/${db}?sslmode=disable"" | sudo tee /opt/postgres_exporter/.postgres.env
+sudo chown postgres_exporter:postgres_exporter /opt/postgres_exporter
+sudo chown postgres_exporter:postgres_exporter /opt/postgres_exporter/.postgres.env
+
+# Step 6: Enable and Start the Service
 systemctl enable postgres-exporter.service
 systemctl start postgres-exporter.service
 

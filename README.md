@@ -44,6 +44,8 @@ After=network-online.target
 User=postgres_exporter
 Group=postgres_exporter
 Type=simple
+WorkingDirectory=/opt/postgres_exporter
+EnvironmentFile=/opt/postgres_exporter/.postgres.env
 ExecStart=/usr/local/bin/postgres_exporter
 
 [Install]
@@ -55,9 +57,13 @@ WantedBy=multi-user.target
 Set the DATA_SOURCE_NAME environment variable with the connection details to your PostgreSQL database:
 
 ```bash
-export DATA_SOURCE_NAME='postgresql://postgres:your_password_here@localhost:5432/postgres?sslmode=disable'
+sudo mkdir /opt/postgres_exporter 
+echo "DATA_SOURCE_NAME="postgresql://<username>:<password>@<host>:5432/postgres?sslmode=disable"" | sudo tee /opt/postgres_exporter/.postgres.env
+sudo chown postgres_exporter:postgres_exporter /opt/postgres_exporter
+sudo chown postgres_exporter:postgres_exporter /opt/postgres_exporter/.postgres.env
+
 ```
-Replace 'your_password_here' with your actual PostgreSQL password.
+Replace <user>, <password> and <host> with your actual PostgreSQL credentials.
 
 ### 5. Enable and Start the Service
 Enable the PostgreSQL Exporter service to start on boot and start the service:
